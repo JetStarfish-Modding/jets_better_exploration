@@ -1,31 +1,31 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "jbe",
 	"version": "${version}",
-	"name": "Example mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Jet's Better Exploration",
+	"description": "Miscellaneous tweaks to encourage exploration",
 	"authors": [
-		"Me!"
+		"jetstarfish",
+		"hugeblank"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://patreon.com/jetstarfish"
 	},
-	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
+	"license": "ARR",
+	"icon": "assets/jbe/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+			"dev.hugeblank.jbe.MainInit"
 		],
 		"client": [
-			"com.example.ExampleModClient"
+			"dev.hugeblank.jbe.ClientInit"
 		]
 	},
 	"mixins": [
-		"modid.mixins.json",
+		"jbe.mixins.json",
 		{
-			"config": "modid.client.mixins.json",
+			"config": "jbe.client.mixins.json",
 			"environment": "client"
 		}
 	],
