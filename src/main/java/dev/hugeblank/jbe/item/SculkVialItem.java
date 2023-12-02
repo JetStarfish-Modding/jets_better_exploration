@@ -40,8 +40,8 @@ public class SculkVialItem extends Item {
         int experience = getVialExperience(itemStack);
         NbtCompound nbt = itemStack.getNbt();
         if (user.isSneaking() && experience < 30) {
-            if (user.experienceLevel > 0) {
-                if (user instanceof ServerPlayerEntity) {
+            if (user.experienceLevel > 0 || user.isCreative()) {
+                if (user instanceof ServerPlayerEntity && !user.isCreative()) {
                     ((ServerPlayerEntity) user).setExperienceLevel(user.experienceLevel-1);
                 }
                 nbt.putInt("experience", experience+1);
@@ -61,7 +61,7 @@ public class SculkVialItem extends Item {
         tooltip.add(Text.translatable("item.jbe.sculk_vial.levels", Text.literal(Objects.toString(getVialExperience(itemStack))).setStyle(Style.EMPTY.withColor(TextColor.parse("gray"))))
                 .setStyle(Style.EMPTY.withColor(TextColor.parse("dark_gray")))
         );
-        if (world.isClient()) {
+        if (world != null && world.isClient()) {
             tooltip.add(Text.translatable("item.jbe.sculk_vial.usage.fill", Text.keybind("key.sneak"), Text.keybind("key.use"))
                     .setStyle(Style.EMPTY.withColor(TextColor.parse("dark_gray")))
             );
