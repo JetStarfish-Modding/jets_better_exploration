@@ -37,6 +37,7 @@ public class MainInit implements ModInitializer {
 		SCULK_VIAL = new SculkVialItem(new FabricItemSettings()
 				.maxCount(1)
 		);
+
 		ALLOW_ICE_BOAT_SPEED = GameRuleRegistry.register("allowIceBoatSpeed", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(false, (minecraftServer, booleanRule) -> {
             for (ServerPlayerEntity serverPlayerEntity : minecraftServer.getPlayerManager().getPlayerList()) {
 				ServerPlayNetworking.send(serverPlayerEntity, new JbeStateChangeS2CPacket(JbeStateChangeS2CPacket.ALLOW_ICE_BOAT_SPEED, booleanRule.get() ? 1.0F : 0.0F));
