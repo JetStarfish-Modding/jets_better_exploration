@@ -1,4 +1,4 @@
-package dev.hugeblank.jbe.mixin;
+package dev.hugeblank.jbe.mixin.entity;
 
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;

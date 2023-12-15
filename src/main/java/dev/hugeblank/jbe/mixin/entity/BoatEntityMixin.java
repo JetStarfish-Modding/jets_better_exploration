@@ -1,4 +1,4 @@
-package dev.hugeblank.jbe.mixin;
+package dev.hugeblank.jbe.mixin.entity;
 
 import dev.hugeblank.jbe.MainInit;
 import net.minecraft.block.BlockState;

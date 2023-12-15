@@ -1,4 +1,4 @@
-package dev.hugeblank.jbe.mixin;
+package dev.hugeblank.jbe.mixin.entity;
 
 import com.mojang.datafixers.util.Pair;
 import dev.hugeblank.jbe.MainInit;

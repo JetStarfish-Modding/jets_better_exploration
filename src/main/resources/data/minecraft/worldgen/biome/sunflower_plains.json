@@ -6,7 +6,7 @@
       "minecraft:canyon"
     ]
   },
-  "downfall": 0.0,
+  "downfall": 0.4,
   "effects": {
     "fog_color": 12638463,
     "mood_sound": {
@@ -15,7 +15,7 @@
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000
     },
-    "sky_color": 7254527,
+    "sky_color": 7907327,
     "water_color": 4159204,
     "water_fog_color": 329011
   },
@@ -44,8 +44,8 @@
       "minecraft:ore_andesite_upper",
       "minecraft:ore_andesite_lower",
       "minecraft:ore_tuff",
-      "minecraft:ore_coal_upper_bonus",
-      "minecraft:ore_coal_lower_bonus",
+      "minecraft:ore_coal_upper",
+      "minecraft:ore_coal_lower",
       "minecraft:ore_iron_upper",
       "minecraft:ore_iron_middle",
       "minecraft:ore_iron_small",
@@ -72,9 +72,11 @@
     ],
     [
       "minecraft:glow_lichen",
-      "minecraft:trees_windswept_savanna",
-      "minecraft:flower_default",
-      "minecraft:patch_grass_normal",
+      "minecraft:patch_tall_grass_2",
+      "minecraft:patch_sunflower",
+      "minecraft:trees_plains",
+      "minecraft:flower_plains",
+      "minecraft:patch_grass_plain",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_sugar_cane",
@@ -84,7 +86,7 @@
       "minecraft:freeze_top_layer"
     ]
   ],
-  "has_precipitation": false,
+  "has_precipitation": true,
   "spawn_costs": {},
   "spawners": {
     "ambient": [
@@ -125,13 +127,13 @@
         "type": "minecraft:horse",
         "maxCount": 6,
         "minCount": 2,
-        "weight": 1
+        "weight": 5
       },
       {
         "type": "minecraft:donkey",
         "maxCount": 6,
         "minCount": 2,
-        "weight": 1
+        "weight": 5
       }
     ],
     "misc": [],
@@ -196,5 +198,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 2.0
+  "temperature": 0.8
 }

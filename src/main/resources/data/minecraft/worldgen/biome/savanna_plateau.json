@@ -130,8 +130,8 @@
       },
       {
         "type": "minecraft:donkey",
-        "maxCount": 1,
-        "minCount": 1,
+        "maxCount": 6,
+        "minCount": 2,
         "weight": 1
       },
       {
