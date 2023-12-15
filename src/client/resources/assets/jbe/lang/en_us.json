@@ -1,5 +1,8 @@
 {
   "gamerule.allowIceBoatSpeed": "Allow boats to speed up on ice-like blocks",
+  "block.minecraft.powered_rail": "Copper Powered Rail",
+  "block.jbe.powered_rail": "Powered Rail",
+  "filled_map.ancient_city": "Abyss Explorer Map",
   "item.jbe.sculk_vial": "Sculk Vial",
   "item.jbe.sculk_vial.levels": "Levels: %1$s",
   "item.jbe.sculk_vial.usage.fill": "%1$s+%2$s to fill vial",
