@@ -16,16 +16,16 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
-
 	mavenCentral()
 	maven { url 'https://jitpack.io' }
 }
 
 loom {
     splitEnvironmentSourceSets()
+	accessWidenerPath = file("src/main/resources/jbe.accesswidener")
 
 	mods {
-		"modid" {
+		"jbe" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}

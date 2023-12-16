@@ -28,27 +28,6 @@ public class InGameHudMixin {
 
     @Shadow private int scaledHeight;
 
-    @Unique private static final int jbe$RENDER_MOUNT_OFFSET = 6;
-
-    // Hell. Nudge everything up a bit
-    @ModifyConstant(constant = @Constant(intValue = 39), method = "renderMountHealth")
-    private int jbe$shiftMountHealthUp(int k) {
-        if (this.client.player != null && this.client.player.getJumpingMount() != null) {
-            return k + jbe$RENDER_MOUNT_OFFSET;
-        } else {
-            return k;
-        }
-    }
-
-    @ModifyConstant(constant = @Constant(intValue = 32), method = "renderMountJumpBar")
-    private int jbe$shiftJumpBarUp(int k) {
-        if (this.client.player != null && this.client.player.getJumpingMount() != null) {
-            return k + jbe$RENDER_MOUNT_OFFSET;
-        } else {
-            return k;
-        }
-    }
-
     @Unique
     public void jbe$renderMountStaminaBar(StaminaMount mount, DrawContext context, int x) {
         this.client.getProfiler().push("staminaBar");
@@ -57,10 +36,18 @@ public class InGameHudMixin {
         int k = this.scaledHeight - 32 + 3;
         context.drawGuiTexture(STAMINA_BAR_BACKGROUND_TEXTURE, x, k, 182, 5);
         if (j > 0) {
-            context.drawGuiTexture(STAMINA_BAR_PROGRESS_TEXTURE, 182, 5, 0, 0, x, k, 1, j, 5);
+            context.drawGuiTexture(STAMINA_BAR_PROGRESS_TEXTURE, 182, 5, 0, 0, x, k, j, 5);
         }
 
         this.client.getProfiler().pop();
+    }
+
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 0), method = "renderMountJumpBar", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    private void jbe$hideJumpBar(JumpingMount mount, DrawContext context, int x, CallbackInfo ci, float f, int i, int j, int k) {
+        if (j == 0) {
+            ci.cancel();
+            this.client.getProfiler().pop();
+        }
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountJumpBar(Lnet/minecraft/entity/JumpingMount;Lnet/minecraft/client/gui/DrawContext;I)V"), method = "render", locals = LocalCapture.CAPTURE_FAILHARD)
