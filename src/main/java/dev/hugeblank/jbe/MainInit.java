@@ -138,4 +138,14 @@ public class MainInit implements ModInitializer {
 			registeredTrade = true;
 		}
 	}
+
+	public static Block melt(Block block) {
+		if (block.equals(Blocks.BLUE_ICE)) {
+			return Blocks.PACKED_ICE;
+		} else if (block.equals(Blocks.PACKED_ICE)) {
+			return Blocks.ICE;
+		} else {
+			return Blocks.AIR;
+		}
+	}
 }

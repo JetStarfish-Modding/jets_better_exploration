@@ -8,6 +8,8 @@
     "ServerWorldMixin",
     "TradeOffersAccessor",
     "TypedWrapperFactoryInvoker",
+    "block.AbstractBlockMixin",
+    "block.BlockMixin",
     "entity.AbstractHorseEntityMixin",
     "entity.AbstractMinecartEntityMixin",
     "entity.BoatEntityMixin",
