@@ -25,7 +25,7 @@ public class EnchantmentMixin {
     private final Enchantment thiz = (Enchantment) (Object) this;
 
     @Unique
-    private final boolean isHorseEnchantable = thiz instanceof ProtectionEnchantment || thiz instanceof FrostWalkerEnchantment || thiz instanceof DepthStriderEnchantment || thiz instanceof ThornsEnchantment || thiz instanceof RespirationEnchantment;
+    private final boolean isHorseEnchantable = thiz instanceof ProtectionEnchantment || thiz instanceof FrostWalkerEnchantment || thiz instanceof DepthStriderEnchantment || thiz instanceof ThornsEnchantment || thiz instanceof RespirationEnchantment || thiz instanceof SoulSpeedEnchantment;
 
     @ModifyVariable(at = @At(value = "FIELD", target = "Lnet/minecraft/enchantment/Enchantment;slotTypes:[Lnet/minecraft/entity/EquipmentSlot;"), method = "<init>(Lnet/minecraft/enchantment/Enchantment$Rarity;Lnet/minecraft/enchantment/EnchantmentTarget;[Lnet/minecraft/entity/EquipmentSlot;)V", index = 3, argsOnly = true)
     private EquipmentSlot[] jbe$setHorseEnchantments(EquipmentSlot[] value) {

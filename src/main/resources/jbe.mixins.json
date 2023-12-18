@@ -15,6 +15,7 @@
     "entity.BoatEntityMixin",
     "entity.MerchantEntityMixin",
     "entity.strider.GoBackToLavaGoalMixin",
+    "entity.strider.LivingEntityMixin",
     "entity.strider.SpawnHelperMixin",
     "entity.strider.StriderEntityMixin",
     "horse_armor.EnchantmentHelperMixin",
