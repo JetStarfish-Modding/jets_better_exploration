@@ -5,6 +5,7 @@
   "mixins": [
     "EndCityGeneratorMixin",
     "EnderDragonFightMixin",
+    "RecipeManagerMixin",
     "ServerWorldMixin",
     "TradeOffersAccessor",
     "TypedWrapperFactoryInvoker",
@@ -14,6 +15,9 @@
     "entity.AbstractMinecartEntityMixin",
     "entity.BoatEntityMixin",
     "entity.MerchantEntityMixin",
+    "entity.strider.GoBackToLavaGoalMixin",
+    "entity.strider.SpawnHelperMixin",
+    "entity.strider.StriderEntityMixin",
     "horse_armor.EnchantmentHelperMixin",
     "horse_armor.EnchantmentMixin",
     "horse_armor.HorseArmorItemMixin",
