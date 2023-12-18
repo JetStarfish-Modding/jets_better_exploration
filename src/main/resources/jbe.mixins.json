@@ -5,7 +5,6 @@
   "mixins": [
     "EndCityGeneratorMixin",
     "EnderDragonFightMixin",
-    "RecipeManagerMixin",
     "ServerWorldMixin",
     "TradeOffersAccessor",
     "TypedWrapperFactoryInvoker",
