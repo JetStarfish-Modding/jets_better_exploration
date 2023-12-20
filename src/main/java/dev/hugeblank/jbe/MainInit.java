@@ -5,19 +5,20 @@ import dev.hugeblank.jbe.item.SculkVialItem;
 import dev.hugeblank.jbe.mixin.TradeOffersAccessor;
 import dev.hugeblank.jbe.mixin.TypedWrapperFactoryInvoker;
 import dev.hugeblank.jbe.network.JbeStateChangeS2CPacket;
+import dev.hugeblank.jbe.village.SellCustomMapTradeFactory;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.PoweredRailBlock;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
+import net.minecraft.item.*;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -44,6 +45,7 @@ public class MainInit implements ModInitializer {
 	public static final Map<RegistryKey<Biome>, List<Block>> BIOME_CROP_BONUSES;
 	public static final GameRules.Key<GameRules.BooleanRule> ALLOW_ICE_BOAT_SPEED;
 	public static final SculkVialItem SCULK_VIAL;
+	public static final FilledMapItem FILLED_CAVE_MAP;
 	public static final PoweredRailBlock POWERED_RAIL;
 	private static final TradeOffers.Factory SELL_ANCIENT_CITY_MAP_TRADE;
 
@@ -52,16 +54,22 @@ public class MainInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, new Identifier(ID, "sculk_vial"), SCULK_VIAL);
+		Registry.register(Registries.ITEM, new Identifier(ID, "filled_cave_map"), FILLED_CAVE_MAP);
 		Registry.register(Registries.BLOCK, new Identifier(ID, "powered_rail"), POWERED_RAIL);
 		Registry.register(Registries.ITEM, Registries.BLOCK.getId(POWERED_RAIL), new BlockItem(POWERED_RAIL, new Item.Settings()));
 
-		// TODO: Modify/remove rails crafting recipe.
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register((content) -> content.addAfter(Items.POWERED_RAIL, POWERED_RAIL));
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> content.add(SCULK_VIAL));
+
+
 	}
 
 	static {
 		SCULK_VIAL = new SculkVialItem(new FabricItemSettings()
 				.maxCount(1)
 		);
+
+		FILLED_CAVE_MAP = new FilledMapItem(new Item.Settings());
 
 		POWERED_RAIL = new PoweredRailBlock(FabricBlockSettings.copy(Blocks.POWERED_RAIL));
 
@@ -120,7 +128,7 @@ public class MainInit implements ModInitializer {
 		if (!registeredTrade) {
 			TradeOfferHelper.registerVillagerOffers(VillagerProfession.CARTOGRAPHER, 5, (trades, rebalance) -> {
 				if (!rebalance) {
-					trades.add(new TradeOffers.SellMapFactory(14, MainInit.ON_ANCIENT_CITY_MAPS, "filled_map.ancient_city", ClassTinkerers.getEnum(MapIcon.Type.class, "ANCIENT_CITY"), 12, 30));
+					trades.add(new SellCustomMapTradeFactory(14, MainInit.ON_ANCIENT_CITY_MAPS, "filled_map.ancient_city", ClassTinkerers.getEnum(MapIcon.Type.class, "ANCIENT_CITY"), 12, 30));
 				} else {
 					Int2ObjectMap<TradeOffers.Factory[]> cartTrades = TradeOffers.REBALANCED_PROFESSION_TO_LEVELED_TRADE.get(VillagerProfession.CARTOGRAPHER);
 					TradeOffers.Factory[] oldOffers = cartTrades.get(2);

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "jbe:item/filled_cave_map",
+    "layer1": "item/filled_map_markings"
+  }
+}

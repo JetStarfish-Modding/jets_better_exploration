@@ -30,7 +30,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 // FROM: https://github.com/audaki/minecraft-cart-engine
-// Very special thanks to audaki for doing this.
+// Very special thanks to audaki for providing this.
 
 @Mixin(AbstractMinecartEntity.class)
 public abstract class AbstractMinecartEntityMixin extends Entity {
@@ -239,7 +239,6 @@ public abstract class AbstractMinecartEntityMixin extends Entity {
                 return fallback;
             }
 
-            System.out.format("%f %f\n", (2.01D + eligibleForwardRailTrackCount * 4.0D) / 20.0D, customMaxSpeed(state));
             return Math.min((2.01D + eligibleForwardRailTrackCount * 4.0D) / 20.0D, customMaxSpeed(state));
         };
 

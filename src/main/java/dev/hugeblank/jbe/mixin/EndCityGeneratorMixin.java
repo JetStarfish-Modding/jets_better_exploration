@@ -20,6 +20,5 @@ public class EndCityGeneratorMixin {
     @Inject(at = @At("TAIL"), method = "init()V", remap = false)
     private void jbe$nerfShips(CallbackInfo ci) {
         shipGenerated = jbe$random.nextBoolean();
-        System.out.println(shipGenerated);
     }
 }

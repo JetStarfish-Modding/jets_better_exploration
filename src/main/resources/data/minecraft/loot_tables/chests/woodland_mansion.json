@@ -304,8 +304,7 @@
           "type": "minecraft:empty"
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:recovery_compass"
+          "type": "minecraft:empty"
         },
         {
           "type": "minecraft:item",

@@ -4,8 +4,10 @@ import dev.hugeblank.jbe.network.JbeStateChangeS2CPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.item.FilledMapItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
@@ -24,5 +26,7 @@ public class ClientInit implements ClientModInitializer {
                 player.getWorld().getGameRules().get(MainInit.ALLOW_ICE_BOAT_SPEED).set(packet.getValue() == 1.0F, null);
             }
 		});
+
+		ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : FilledMapItem.getMapColor(stack), MainInit.FILLED_CAVE_MAP);
 	}
 }
