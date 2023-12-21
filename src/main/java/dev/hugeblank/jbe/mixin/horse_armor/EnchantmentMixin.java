@@ -3,7 +3,7 @@ package dev.hugeblank.jbe.mixin.horse_armor;
 import net.minecraft.enchantment.*;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.item.HorseArmorItem;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,8 +26,8 @@ public class EnchantmentMixin {
 
     @Inject(at = @At(value = "RETURN"), method = "getEquipment", locals = LocalCapture.CAPTURE_FAILHARD)
     private void jbe$spoofEquipment(LivingEntity entity, CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir, Map<EquipmentSlot, ItemStack> map) {
-        ItemStack itemStack = entity.getArmorItems().iterator().next();
-        if (entity instanceof AbstractHorseEntity) {
+        if (entity instanceof HorseEntity horse) {
+            ItemStack itemStack = horse.getArmorType();
             for(EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
                 if (!itemStack.isEmpty() && equipmentSlot.isArmorSlot()) {
                     map.put(equipmentSlot, itemStack);

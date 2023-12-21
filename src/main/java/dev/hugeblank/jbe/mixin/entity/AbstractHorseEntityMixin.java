@@ -7,18 +7,14 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.HorseArmorItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,57 +24,38 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
 import java.util.UUID;
 
 @Mixin(AbstractHorseEntity.class)
 public abstract class AbstractHorseEntityMixin extends AnimalEntity implements StaminaMount {
 
+    @Unique
+    private static TrackedData<Integer> HORSE_STAMINA;
+
+    @Unique
+    private static TrackedData<Boolean> HORSE_EXHAUSTED;
 
     @Unique
     private static final UUID HORSE_EXHAUSTED_ID = UUID.fromString("87f035c6-df44-4351-a396-c9698a293ce3");
+
     @Unique
     private static final EntityAttributeModifier HORSE_EXHAUSTED_MOD = new EntityAttributeModifier(HORSE_EXHAUSTED_ID, "Horse Exhaustion Debuff", -0.25d, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
 
     @Unique
     private final EntityAttributeInstance HORSE_MOVEMENT_SPEED = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
 
+    @Shadow protected SimpleInventory items;
+
     @Shadow @Nullable public abstract LivingEntity getControllingPassenger();
 
     @Shadow public abstract boolean isTame();
 
-    @Shadow protected SimpleInventory items;
-
     @Shadow public abstract boolean isSaddled();
 
-    @Unique
-    private static TrackedData<Integer> HORSE_STAMINA;
-    @Unique
-    private static TrackedData<Boolean> HORSE_EXHAUSTED;
+    @Shadow protected abstract @Nullable SoundEvent getAngrySound();
 
     protected AbstractHorseEntityMixin(EntityType<? extends AnimalEntity> entityType, World world) {
         super(entityType, world);
-    }
-
-    @Override
-    public Iterable<ItemStack> getArmorItems() {
-        return this.getWorld().isClient() ? super.getArmorItems() : List.of(this.items.getStack(1));
-    }
-
-    @Override
-    public void damageArmor(DamageSource source, float amount) {
-        if (!(amount <= 0.0F)) {
-            amount /= 4.0F;
-            if (amount < 1.0F) {
-                amount = 1.0F;
-            }
-            ItemStack itemStack = this.items.getStack(1);
-            if ((!source.isIn(DamageTypeTags.IS_FIRE) || !itemStack.getItem().isFireproof()) && itemStack.getItem() instanceof HorseArmorItem) {
-                itemStack.damage((int)amount, this, entity -> {
-                    if (!entity.getWorld().isClient()) entity.playSound(SoundEvents.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
-                });
-            }
-        }
     }
 
     @Override
@@ -111,6 +88,10 @@ public abstract class AbstractHorseEntityMixin extends AnimalEntity implements S
             }
             if (staminaTicks == 0 && !exhausted) {
                 this.dataTracker.set(HORSE_EXHAUSTED, true);
+                SoundEvent soundEvent = this.getAngrySound();
+                if (soundEvent != null) {
+                    this.playSound(soundEvent, this.getSoundVolume(), this.getSoundPitch());
+                }
                 if (controller != null) {
                     controller.setSprinting(false);
                 }

@@ -15,6 +15,7 @@
     "entity.AbstractHorseEntityMixin",
     "entity.AbstractMinecartEntityMixin",
     "entity.BoatEntityMixin",
+    "entity.HorseEntityMixin",
     "entity.LivingEntityMixin",
     "entity.MerchantEntityMixin",
     "entity.strider.GoBackToLavaGoalMixin",
