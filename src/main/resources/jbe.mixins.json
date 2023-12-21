@@ -6,6 +6,7 @@
     "EndCityGeneratorMixin",
     "EnderDragonFightMixin",
     "FilledMapItemAccessor",
+    "FilledMapItemMixin",
     "ServerWorldMixin",
     "TradeOffersAccessor",
     "TypedWrapperFactoryInvoker",

@@ -44,6 +44,7 @@ public class MainInit implements ModInitializer {
 	public static final TagKey<Structure> ON_ANCIENT_CITY_MAPS;
 	public static final Map<RegistryKey<Biome>, List<Block>> BIOME_CROP_BONUSES;
 	public static final GameRules.Key<GameRules.BooleanRule> ALLOW_ICE_BOAT_SPEED;
+	public static final int HORSE_STAMINA = 1200;
 	public static final SculkVialItem SCULK_VIAL;
 	public static final FilledMapItem FILLED_CAVE_MAP;
 	public static final PoweredRailBlock POWERED_RAIL;
@@ -74,7 +75,7 @@ public class MainInit implements ModInitializer {
 		POWERED_RAIL = new PoweredRailBlock(FabricBlockSettings.copy(Blocks.POWERED_RAIL));
 
 		ON_ANCIENT_CITY_MAPS = TagKey.of(RegistryKeys.STRUCTURE, new Identifier("minecraft", "on_ancient_city_maps"));
-		SELL_ANCIENT_CITY_MAP_TRADE = new TradeOffers.SellMapFactory(14, MainInit.ON_ANCIENT_CITY_MAPS, "filled_map.ancient_city", ClassTinkerers.getEnum(MapIcon.Type.class, "ANCIENT_CITY"), 12, 30);
+		SELL_ANCIENT_CITY_MAP_TRADE = new SellCustomMapTradeFactory(14, MainInit.ON_ANCIENT_CITY_MAPS, "filled_map.ancient_city", ClassTinkerers.getEnum(MapIcon.Type.class, "ANCIENT_CITY"), 12, 5);
 
 		ALLOW_ICE_BOAT_SPEED = GameRuleRegistry.register("allowIceBoatSpeed", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(false, (minecraftServer, booleanRule) -> {
             for (ServerPlayerEntity serverPlayerEntity : minecraftServer.getPlayerManager().getPlayerList()) {
@@ -128,7 +129,7 @@ public class MainInit implements ModInitializer {
 		if (!registeredTrade) {
 			TradeOfferHelper.registerVillagerOffers(VillagerProfession.CARTOGRAPHER, 5, (trades, rebalance) -> {
 				if (!rebalance) {
-					trades.add(new SellCustomMapTradeFactory(14, MainInit.ON_ANCIENT_CITY_MAPS, "filled_map.ancient_city", ClassTinkerers.getEnum(MapIcon.Type.class, "ANCIENT_CITY"), 12, 30));
+					trades.add(SELL_ANCIENT_CITY_MAP_TRADE);
 				} else {
 					Int2ObjectMap<TradeOffers.Factory[]> cartTrades = TradeOffers.REBALANCED_PROFESSION_TO_LEVELED_TRADE.get(VillagerProfession.CARTOGRAPHER);
 					TradeOffers.Factory[] oldOffers = cartTrades.get(2);
