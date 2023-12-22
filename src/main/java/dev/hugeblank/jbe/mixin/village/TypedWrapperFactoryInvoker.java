@@ -1,4 +1,4 @@
-package dev.hugeblank.jbe.mixin;
+package dev.hugeblank.jbe.mixin.village;
 
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerType;

@@ -2,8 +2,8 @@ package dev.hugeblank.jbe;
 
 import com.chocohead.mm.api.ClassTinkerers;
 import dev.hugeblank.jbe.item.SculkVialItem;
-import dev.hugeblank.jbe.mixin.TradeOffersAccessor;
-import dev.hugeblank.jbe.mixin.TypedWrapperFactoryInvoker;
+import dev.hugeblank.jbe.mixin.village.TradeOffersAccessor;
+import dev.hugeblank.jbe.mixin.village.TypedWrapperFactoryInvoker;
 import dev.hugeblank.jbe.network.JbeStateChangeS2CPacket;
 import dev.hugeblank.jbe.village.SellCustomMapTradeFactory;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;

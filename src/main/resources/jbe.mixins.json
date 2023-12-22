@@ -5,11 +5,10 @@
   "mixins": [
     "EndCityGeneratorMixin",
     "EnderDragonFightMixin",
+    "FeatureSetMixin",
     "FilledMapItemAccessor",
     "FilledMapItemMixin",
     "ServerWorldMixin",
-    "TradeOffersAccessor",
-    "TypedWrapperFactoryInvoker",
     "block.AbstractBlockMixin",
     "block.BlockMixin",
     "entity.AbstractHorseEntityMixin",
@@ -20,11 +19,15 @@
     "entity.MerchantEntityMixin",
     "entity.strider.GoBackToLavaGoalMixin",
     "entity.strider.SpawnHelperMixin",
+    "entity.strider.SpawnRestrictionMixin",
     "entity.strider.StriderEntityMixin",
     "horse_armor.EnchantmentHelperMixin",
     "horse_armor.EnchantmentMixin",
     "horse_armor.HorseArmorItemMixin",
-    "horse_armor.ItemsMixin"
+    "horse_armor.ItemsMixin",
+    "village.TradeOfferAccessor",
+    "village.TradeOffersAccessor",
+    "village.TypedWrapperFactoryInvoker"
   ],
   "injectors": {
     "defaultRequire": 1
