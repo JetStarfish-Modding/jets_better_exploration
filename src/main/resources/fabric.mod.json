@@ -39,8 +39,5 @@
 		"java": ">=17",
 		"fabric-api": "*",
 		"mm": ">=2.3"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }
