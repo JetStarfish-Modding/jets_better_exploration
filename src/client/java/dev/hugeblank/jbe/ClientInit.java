@@ -16,7 +16,7 @@ public class ClientInit implements ClientModInitializer {
 	public void onInitializeClient() {
 		ModelPredicateProviderRegistry.register(MainInit.SCULK_VIAL, new Identifier("experience"), (itemStack, clientWorld, livingEntity, seed) -> {
 			NbtCompound nbt = itemStack.getNbt();
-			return nbt == null || !nbt.contains("experience") ? 0 : (float) nbt.getInt("experience") /30;
+			return nbt == null || !nbt.contains("level") ? 0 : (float) nbt.getInt("level") / 30;
 		});
 
 		BlockRenderLayerMap.INSTANCE.putBlock(MainInit.POWERED_RAIL, RenderLayer.getCutout());

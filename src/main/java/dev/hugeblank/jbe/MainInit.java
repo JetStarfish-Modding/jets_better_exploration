@@ -2,12 +2,11 @@ package dev.hugeblank.jbe;
 
 import com.chocohead.mm.api.ClassTinkerers;
 import dev.hugeblank.jbe.item.SculkVialItem;
-import dev.hugeblank.jbe.mixin.village.TradeOffersAccessor;
-import dev.hugeblank.jbe.mixin.village.TypedWrapperFactoryInvoker;
 import dev.hugeblank.jbe.network.JbeStateChangeS2CPacket;
 import dev.hugeblank.jbe.village.SellCustomMapTradeFactory;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -29,12 +28,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
-import net.minecraft.village.VillagerType;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.structure.Structure;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +61,14 @@ public class MainInit implements ModInitializer {
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register((content) -> content.addAfter(Items.POWERED_RAIL, POWERED_RAIL));
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> content.add(SCULK_VIAL));
 
-
+		ServerWorldEvents.UNLOAD.register((server, world) -> {
+			if (world.getRegistryKey().getValue().toString().equals("minecraft:the_end")) {
+				Int2ObjectMap<TradeOffers.Factory[]> cartographer = TradeOffers.REBALANCED_PROFESSION_TO_LEVELED_TRADE.get(VillagerProfession.CARTOGRAPHER);
+				List<TradeOffers.Factory> factories = new ArrayList<>(List.of(cartographer.get(5)));
+				factories.remove(SELL_ANCIENT_CITY_MAP_TRADE);
+				cartographer.put(5, factories.toArray(new TradeOffers.Factory[0]));
+			}
+		});
 	}
 
 	static {
@@ -128,20 +134,8 @@ public class MainInit implements ModInitializer {
 	public static void registerAncientCityMapTrade() {
 		if (!registeredTrade) {
 			TradeOfferHelper.registerVillagerOffers(VillagerProfession.CARTOGRAPHER, 5, (trades, rebalance) -> {
-				if (!rebalance) {
+				if (rebalance) {
 					trades.add(SELL_ANCIENT_CITY_MAP_TRADE);
-				} else {
-					Int2ObjectMap<TradeOffers.Factory[]> cartTrades = TradeOffers.REBALANCED_PROFESSION_TO_LEVELED_TRADE.get(VillagerProfession.CARTOGRAPHER);
-					TradeOffers.Factory[] oldOffers = cartTrades.get(2);
-					HashMap<VillagerType, TradeOffers.Factory> newOffersTwo = new HashMap<>();
-					newOffersTwo.put(VillagerType.DESERT, TradeOffersAccessor.getSELL_JUNGLE_TEMPLE_MAP_TRADE());
-					newOffersTwo.put(VillagerType.SAVANNA, TradeOffersAccessor.getSELL_JUNGLE_TEMPLE_MAP_TRADE());
-					newOffersTwo.put(VillagerType.PLAINS, SELL_ANCIENT_CITY_MAP_TRADE);
-					newOffersTwo.put(VillagerType.TAIGA, TradeOffersAccessor.getSELL_SWAMP_HUT_MAP_TRADE());
-					newOffersTwo.put(VillagerType.SNOW, TradeOffersAccessor.getSELL_SWAMP_HUT_MAP_TRADE());
-					newOffersTwo.put(VillagerType.JUNGLE, TradeOffersAccessor.getSELL_SWAMP_HUT_MAP_TRADE());
-					newOffersTwo.put(VillagerType.SWAMP, TradeOffersAccessor.getSELL_JUNGLE_TEMPLE_MAP_TRADE());
-					oldOffers[2] = TypedWrapperFactoryInvoker.createTypedWrapperFactory(newOffersTwo);
 				}
 			});
 			registeredTrade = true;

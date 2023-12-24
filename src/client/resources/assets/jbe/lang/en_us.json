@@ -5,6 +5,6 @@
   "filled_map.ancient_city": "Abyss Explorer Map",
   "item.jbe.sculk_vial": "Sculk Vial",
   "item.jbe.sculk_vial.levels": "Levels: %1$s",
-  "item.jbe.sculk_vial.usage.fill": "%1$s+%2$s to fill vial",
-  "item.jbe.sculk_vial.usage.drain": "%1$s to drain vial"
+  "item.jbe.sculk_vial.usage.fill": "%1$s + %2$s to fill",
+  "item.jbe.sculk_vial.usage.drain": "%1$s to drain"
 }
