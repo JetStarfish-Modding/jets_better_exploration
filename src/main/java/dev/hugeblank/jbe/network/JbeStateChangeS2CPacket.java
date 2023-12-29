@@ -9,6 +9,7 @@ import net.minecraft.util.Identifier;
 public class JbeStateChangeS2CPacket implements FabricPacket {
     public static final PacketType<JbeStateChangeS2CPacket> TYPE = PacketType.create(new Identifier(MainInit.ID, "state_change"), JbeStateChangeS2CPacket::new);
     public static final int ALLOW_ICE_BOAT_SPEED = 0;
+    public static final int HORSE_STAMINA = 1;
 
     private final int reason;
     private final float value;

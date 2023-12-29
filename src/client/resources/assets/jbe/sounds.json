@@ -1,0 +1,12 @@
+{
+  "item.sculk_vial.withdraw": {
+    "sounds": [
+      "jbe:item/sculk_vial/withdraw"
+    ]
+  },
+  "item.sculk_vial.deposit": {
+    "sounds": [
+      "jbe:item/sculk_vial/deposit"
+    ]
+  }
+}

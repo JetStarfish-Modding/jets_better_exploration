@@ -66,7 +66,7 @@
   ],
   "has_precipitation": false,
   "spawn_costs": {},
-  "creature_spawn_probability": 0.3,
+  "creature_spawn_probability": 0.15,
   "spawners": {
     "ambient": [],
     "axolotls": [],

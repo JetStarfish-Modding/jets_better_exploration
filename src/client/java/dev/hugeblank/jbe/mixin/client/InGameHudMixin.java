@@ -8,6 +8,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.Window;
 import net.minecraft.entity.JumpingMount;
+import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,7 +32,7 @@ public class InGameHudMixin {
     @Unique
     public void jbe$renderMountStaminaBar(StaminaMount mount, DrawContext context, int x) {
         this.client.getProfiler().push("staminaBar");
-        float f = (float) mount.jbe$getStamina()/MainInit.HORSE_STAMINA;
+        float f = (float) mount.jbe$getStamina()/((AbstractHorseEntity)mount).getWorld().getGameRules().getInt(MainInit.HORSE_STAMINA);
         int j = (int)(f * 183.0F);
         int k = this.scaledHeight - 32 + 3;
         context.drawGuiTexture(STAMINA_BAR_BACKGROUND_TEXTURE, x, k, 182, 5);
@@ -44,7 +45,7 @@ public class InGameHudMixin {
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 0), method = "renderMountJumpBar", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void jbe$hideJumpBar(JumpingMount mount, DrawContext context, int x, CallbackInfo ci, float f, int i, int j, int k) {
-        if (j == 0 && mount instanceof StaminaMount && ((StaminaMount)mount).jbe$getStamina() < MainInit.HORSE_STAMINA) {
+        if (j == 0) {
             ci.cancel();
             this.client.getProfiler().pop();
         }

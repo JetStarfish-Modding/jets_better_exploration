@@ -1,7 +1,9 @@
 package dev.hugeblank.jbe.mixin.entity;
 
 import dev.hugeblank.jbe.MainInit;
+import dev.hugeblank.jbe.entity.DynamicEntityAttributeModifier;
 import dev.hugeblank.jbe.entity.StaminaMount;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
@@ -14,7 +16,10 @@ import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,12 +39,6 @@ public abstract class AbstractHorseEntityMixin extends AnimalEntity implements S
 
     @Unique
     private static TrackedData<Boolean> HORSE_EXHAUSTED;
-
-    @Unique
-    private static final UUID HORSE_EXHAUSTED_ID = UUID.fromString("87f035c6-df44-4351-a396-c9698a293ce3");
-
-    @Unique
-    private static final EntityAttributeModifier HORSE_EXHAUSTED_MOD = new EntityAttributeModifier(HORSE_EXHAUSTED_ID, "Horse Exhaustion Debuff", -0.25d, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
 
     @Unique
     private final EntityAttributeInstance HORSE_MOVEMENT_SPEED = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
@@ -66,7 +65,7 @@ public abstract class AbstractHorseEntityMixin extends AnimalEntity implements S
     @Inject(at = @At("TAIL"), method = "initDataTracker")
     private void jbe$initTrackedStamina(CallbackInfo ci) {
         if (!this.dataTracker.containsKey(HORSE_STAMINA) || !this.dataTracker.containsKey(HORSE_EXHAUSTED)) {
-            this.dataTracker.startTracking(HORSE_STAMINA, MainInit.HORSE_STAMINA);
+            this.dataTracker.startTracking(HORSE_STAMINA, this.getWorld().getGameRules().getInt(MainInit.HORSE_STAMINA));
             this.dataTracker.startTracking(HORSE_EXHAUSTED, false);
         }
     }
@@ -74,17 +73,23 @@ public abstract class AbstractHorseEntityMixin extends AnimalEntity implements S
     @Inject(at = @At("TAIL"), method = "tickMovement")
     private void jbe$tickStamina(CallbackInfo ci) {
         if (!this.getWorld().isClient() && HORSE_MOVEMENT_SPEED != null) {
+            GameRules rules = this.getWorld().getGameRules();
+            int stamina = rules.getInt(MainInit.HORSE_STAMINA);
             LivingEntity controller = this.getControllingPassenger();
             int staminaTicks = this.dataTracker.get(HORSE_STAMINA);
             boolean exhausted = this.dataTracker.get(HORSE_EXHAUSTED);
             // if nobody is mounted, or the controller is not sprinting, THEN canRecover is true.
             boolean canRecover = controller == null || !controller.isSprinting();
-            if (canRecover && staminaTicks < MainInit.HORSE_STAMINA) {
-                this.dataTracker.set(HORSE_STAMINA, Math.min(staminaTicks + 2, MainInit.HORSE_STAMINA)); // regenerate stamina
-                this.setSprinting(false);
+            if (canRecover && staminaTicks < stamina) {
+                this.dataTracker.set(HORSE_STAMINA, Math.min(staminaTicks + rules.getInt(MainInit.HORSE_STAMINA_REGEN), stamina)); // regenerate stamina
+                if (HORSE_MOVEMENT_SPEED.hasModifier(MainInit.HORSE_SPRINT_MOD)) {
+                    HORSE_MOVEMENT_SPEED.removeModifier(MainInit.HORSE_SPRINT_MOD.getId());
+                }
             } else if (!canRecover && staminaTicks > 0 && this.isTame() && this.isSaddled()){
                 this.dataTracker.set(HORSE_STAMINA, staminaTicks-1); // decrement stamina
-                this.setSprinting(true);
+                if (!HORSE_MOVEMENT_SPEED.hasModifier(MainInit.HORSE_SPRINT_MOD)) {
+                    HORSE_MOVEMENT_SPEED.addTemporaryModifier(MainInit.HORSE_SPRINT_MOD);
+                }
             }
             if (staminaTicks == 0 && !exhausted) {
                 this.dataTracker.set(HORSE_EXHAUSTED, true);
@@ -95,15 +100,15 @@ public abstract class AbstractHorseEntityMixin extends AnimalEntity implements S
                 if (controller != null) {
                     controller.setSprinting(false);
                 }
-                if (!HORSE_MOVEMENT_SPEED.hasModifier(HORSE_EXHAUSTED_MOD)) {
-                    HORSE_MOVEMENT_SPEED.addTemporaryModifier(HORSE_EXHAUSTED_MOD);
+                if (!HORSE_MOVEMENT_SPEED.hasModifier(MainInit.HORSE_EXHAUSTED_MOD)) {
+                    HORSE_MOVEMENT_SPEED.addTemporaryModifier(MainInit.HORSE_EXHAUSTED_MOD);
                 }
-                if (this.isSprinting()) {
-                    this.setSprinting(false);
+                if (HORSE_MOVEMENT_SPEED.hasModifier(MainInit.HORSE_SPRINT_MOD)) {
+                    HORSE_MOVEMENT_SPEED.removeModifier(MainInit.HORSE_SPRINT_MOD.getId());
                 }
-            } else if (staminaTicks == MainInit.HORSE_STAMINA && exhausted) {
+            } else if (staminaTicks == stamina && exhausted) {
                 this.dataTracker.set(HORSE_EXHAUSTED, false);
-                HORSE_MOVEMENT_SPEED.removeModifier(HORSE_EXHAUSTED_ID);
+                HORSE_MOVEMENT_SPEED.removeModifier(MainInit.HORSE_EXHAUSTED_MOD.getId());
             }
         }
     }

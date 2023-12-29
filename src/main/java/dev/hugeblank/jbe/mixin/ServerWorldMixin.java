@@ -40,7 +40,6 @@ public abstract class ServerWorldMixin {
 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/server/MinecraftServer;Ljava/util/concurrent/Executor;Lnet/minecraft/world/level/storage/LevelStorage$Session;Lnet/minecraft/world/level/ServerWorldProperties;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/world/dimension/DimensionOptions;Lnet/minecraft/server/WorldGenerationProgressListener;ZJLjava/util/List;ZLnet/minecraft/util/math/random/RandomSequencesState;)V")
     private void jbe$dragonCheck(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> worldKey, DimensionOptions dimensionOptions, WorldGenerationProgressListener worldGenerationProgressListener, boolean debugWorld, long seed, List spawners, boolean shouldTickTime, RandomSequencesState randomSequencesState, CallbackInfo ci) {
-        // This code is volatile! If any trades are added to the second level of the cartographer villager, this will probably explode.
         if (worldKey.getValue().toString().equals("minecraft:the_end") && (enderDragonFight == null || enderDragonFight.hasPreviouslyKilled())) {
             MainInit.registerAncientCityMapTrade();
         }

@@ -32,37 +32,19 @@ public abstract class MerchantEntityMixin extends PassiveEntity {
         //noinspection ConstantValue
         if ((Object) this instanceof VillagerEntity villager && villager.getVillagerData().getProfession() == VillagerProfession.LIBRARIAN) {
             int experience = 0;
+            TradeOffers.Factory target = null;
             for (TradeOffers.Factory factory : arrayList) {
                 if (factory instanceof TradeOffers.TypedWrapperFactory) {
                     TradeOffer offer = factory.create(this, this.getRandom());
                     if (offer.getSellItem().isOf(Items.ENCHANTED_BOOK)) {
-                        experience = ((TradeOfferAccessor)offer).getMerchantExperience();
+                        target = factory;
+                        experience = ((TradeOfferAccessor) offer).getMerchantExperience();
                     }
                 }
             }
-            if (experience > 0) {
+            if (target != null && this.getRandom().nextInt(3) > 0) {
+                arrayList.remove(target);
                 arrayList.add(new TradeOffers.EnchantBookFactory(experience)); // Increase the chance to get a book trade
-            }
-        }
-    }
-
-
-    @Inject(at = @At(value = "TAIL"), method = "fillRecipesFromPool(Lnet/minecraft/village/TradeOfferList;[Lnet/minecraft/village/TradeOffers$Factory;I)V", locals = LocalCapture.CAPTURE_FAILHARD)
-    private void jbe$deduplicate(TradeOfferList recipeList, TradeOffers.Factory[] pool, int count, CallbackInfo ci, ArrayList<TradeOffers.Factory> arrayList, int i) {
-        boolean hasBook = false;
-        for (TradeOffer tradeOffer : recipeList) {
-            if (tradeOffer.getSellItem().isOf(Items.ENCHANTED_BOOK)) {
-                if (hasBook) {
-                    recipeList.remove(tradeOffer); // If there's already a book trade, remove this one
-                    if (!arrayList.isEmpty()) { // And attempt to pull for a different one
-                        TradeOffer newOffer = arrayList.remove(this.getRandom().nextInt(arrayList.size())).create(this, this.getRandom());
-                        if (newOffer != null) {
-                            recipeList.add(newOffer);
-                        }
-                    }
-                    break;
-                }
-                hasBook = true;
             }
         }
     }

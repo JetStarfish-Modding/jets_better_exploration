@@ -3,6 +3,7 @@
   "package": "dev.hugeblank.jbe.mixin.client",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "CreateWorldScreenMixin",
     "HeldItemRendererMixin",
     "HorseArmorFeatureRendererMixin",
     "InGameHudMixin"

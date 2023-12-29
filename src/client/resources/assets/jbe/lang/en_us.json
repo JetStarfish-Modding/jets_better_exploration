@@ -1,10 +1,13 @@
 {
   "gamerule.allowIceBoatSpeed": "Allow boats to speed up on ice-like blocks",
-  "block.minecraft.powered_rail": "Copper Powered Rail",
-  "block.jbe.powered_rail": "Powered Rail",
+  "gamerule.horseStaminaTicks": "Amount of ticks horses are allowed to sprint before getting exhausted",
+  "gamerule.horseExhaustDebuff": "Percent of movement speed to remove when horse gets exhausted",
+  "gamerule.horseSprintBuff": "Percent of movement speed to add when horse is sprinting",
+  "gamerule.horseStaminaRegenTicks": "Amount of ticks to add back to stamina per tick of not sprinting",
+  "block.jbe.powered_rail": "Super Powered Rail",
   "filled_map.ancient_city": "Abyss Explorer Map",
   "item.jbe.sculk_vial": "Sculk Vial",
-  "item.jbe.sculk_vial.levels": "Levels: %1$s",
+  "item.jbe.sculk_vial.levels": "Experience: %1$s",
   "item.jbe.sculk_vial.usage.fill": "%1$s + %2$s to fill",
   "item.jbe.sculk_vial.usage.drain": "%1$s to drain"
 }

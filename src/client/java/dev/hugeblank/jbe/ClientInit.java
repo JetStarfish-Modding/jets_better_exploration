@@ -1,5 +1,6 @@
 package dev.hugeblank.jbe;
 
+import dev.hugeblank.jbe.item.SculkVialItem;
 import dev.hugeblank.jbe.network.JbeStateChangeS2CPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -16,7 +17,7 @@ public class ClientInit implements ClientModInitializer {
 	public void onInitializeClient() {
 		ModelPredicateProviderRegistry.register(MainInit.SCULK_VIAL, new Identifier("experience"), (itemStack, clientWorld, livingEntity, seed) -> {
 			NbtCompound nbt = itemStack.getNbt();
-			return nbt == null || !nbt.contains("level") ? 0 : (float) nbt.getInt("level") / 30;
+			return nbt == null || !nbt.contains("experience") ? 0 : (float) nbt.getInt("experience") / SculkVialItem.MAX_XP;
 		});
 
 		BlockRenderLayerMap.INSTANCE.putBlock(MainInit.POWERED_RAIL, RenderLayer.getCutout());

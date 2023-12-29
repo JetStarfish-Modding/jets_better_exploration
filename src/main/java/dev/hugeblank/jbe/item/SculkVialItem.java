@@ -1,17 +1,24 @@
 package dev.hugeblank.jbe.item;
 
+import dev.hugeblank.jbe.MainInit;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsage;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,43 +40,67 @@ public class SculkVialItem extends Item {
         NbtCompound nbt = itemStack.getNbt();
         if (!nbt.contains("experience")) {
             nbt.putInt("experience", 0);
-            nbt.putInt("level", 0);
         }
         return nbt.getInt("experience");
     }
 
-    protected int getVialLevel(ItemStack itemStack) {
-        int points = getVialExperience(itemStack);
-        int level = 0;
-        while (points >= 0) {
-            points -= getLevelUpExperience(level++);
+    @Override
+    public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
+        int vialXP = getVialExperience(stack);
+        NbtCompound nbt = stack.getNbt();
+        //noinspection DataFlowIssue
+        nbt.putInt("experience", 0);
+        world.playSound(null, user.getBlockPos(), MainInit.SCULK_VIAL_WITHDRAW, SoundCategory.PLAYERS, 1F, world.random.nextFloat() * 0.1F + 0.9F);
+        if (user instanceof PlayerEntity player) {
+            player.addExperience(vialXP);
         }
-        return level-1;
+        return stack;
     }
 
     @SuppressWarnings("DataFlowIssue")
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
-        int experience = getVialExperience(itemStack);
+        int vialXP = getVialExperience(itemStack);
+        int playerXP = getPlayerTotalExperience(user);
         NbtCompound nbt = itemStack.getNbt();
-        if (user.isSneaking() && experience < MAX_XP) {
-            if (getPlayerTotalExperience(user) > 0 || user.isCreative()) {
-                int addXp = Math.min(getLevelUpExperience(user.experienceLevel-1), MAX_XP-experience);
+        if (user.isSneaking() && vialXP <= MAX_XP && (playerXP > 0 || user.isCreative())) {
+            int addXp = Math.min(playerXP, MAX_XP-vialXP);
+            if (addXp > 0) {
                 if (user instanceof ServerPlayerEntity && !user.isCreative()) {
                     user.addExperience(-addXp);
                 }
-                nbt.putInt("experience", experience+addXp);
-                nbt.putInt("level", getVialLevel(itemStack));
+                nbt.putInt("experience", vialXP +addXp);
+                world.playSound(null, user.getBlockPos(), MainInit.SCULK_VIAL_DEPOSIT, SoundCategory.PLAYERS, 1F, world.random.nextFloat() * 0.1F + 0.9F);
                 return new TypedActionResult<>(ActionResult.SUCCESS, itemStack);
             }
-        } else if (!user.isSneaking() && experience > 0) {
-            nbt.putInt("experience", 0);
-            nbt.putInt("level", 0);
-            user.addExperience(experience);
-            return new TypedActionResult<>(ActionResult.SUCCESS, itemStack);
+        } else if (!user.isSneaking() && vialXP > 0) {
+            return ItemUsage.consumeHeldItem(world, user, hand);
         }
         return new TypedActionResult<>(ActionResult.PASS, itemStack);
+    }
+
+    @Override
+    public UseAction getUseAction(ItemStack stack) {
+        return getVialExperience(stack) > 0 ? UseAction.DRINK : UseAction.NONE;
+    }
+
+    public SoundEvent getDrinkSound() {
+        return SoundEvents.ENTITY_GENERIC_DRINK;
+    }
+
+    public SoundEvent getEatSound() {
+        return SoundEvents.ENTITY_GENERIC_DRINK;
+    }
+
+    @Override
+    public int getMaxUseTime(ItemStack stack) {
+        return 16;
+    }
+
+    @Override
+    public boolean hasGlint(ItemStack stack) {
+        return getVialExperience(stack) > 0;
     }
 
     @Override
@@ -77,7 +108,7 @@ public class SculkVialItem extends Item {
         super.appendTooltip(itemStack, world, tooltip, context);
         NbtCompound nbt = itemStack.getNbt();
         if (nbt != null) {
-            tooltip.add(Text.translatable("item.jbe.sculk_vial.levels", Text.literal(Objects.toString(nbt.getInt("level"))).setStyle(Style.EMPTY.withColor(TextColor.parse("gray"))))
+            tooltip.add(Text.translatable("item.jbe.sculk_vial.levels", Text.literal(Objects.toString(nbt.getInt("experience")) + "/" + MAX_XP).setStyle(Style.EMPTY.withColor(TextColor.parse("gray"))))
                     .setStyle(Style.EMPTY.withColor(TextColor.parse("dark_gray")))
             );
         }
@@ -103,9 +134,9 @@ public class SculkVialItem extends Item {
         int levels = user.experienceLevel;
         int points = 0;
         while (levels > 0) {
-            points += getLevelUpExperience(levels--);
+            points += getLevelUpExperience(--levels);
         }
-        points += Math.round((float) user.getNextLevelExperience() * user.experienceProgress);
+        points += Math.round(((float) user.getNextLevelExperience()) * user.experienceProgress);
         return points;
     }
 }
