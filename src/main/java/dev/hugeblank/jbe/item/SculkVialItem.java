@@ -65,7 +65,8 @@ public class SculkVialItem extends Item {
         int playerXP = getPlayerTotalExperience(user);
         NbtCompound nbt = itemStack.getNbt();
         if (user.isSneaking() && vialXP <= MAX_XP && (playerXP > 0 || user.isCreative())) {
-            int addXp = Math.min(playerXP, MAX_XP-vialXP);
+            int freeSpace = MAX_XP-vialXP;
+            int addXp = user.isCreative() ? freeSpace : Math.min(playerXP, freeSpace);
             if (addXp > 0) {
                 if (user instanceof ServerPlayerEntity && !user.isCreative()) {
                     user.addExperience(-addXp);
@@ -95,7 +96,7 @@ public class SculkVialItem extends Item {
 
     @Override
     public int getMaxUseTime(ItemStack stack) {
-        return 16;
+        return 32;
     }
 
     @Override
