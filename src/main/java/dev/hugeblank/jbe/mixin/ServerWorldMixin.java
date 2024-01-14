@@ -6,6 +6,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.resource.featuretoggle.FeatureFlag;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
@@ -22,11 +25,14 @@ import net.minecraft.world.level.ServerWorldProperties;
 import net.minecraft.world.level.storage.LevelStorage;
 import net.minecraft.world.spawner.Spawner;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
@@ -38,6 +44,16 @@ public abstract class ServerWorldMixin {
     @Shadow
     @Nullable
     private EnderDragonFight enderDragonFight;
+
+    @Shadow @Final private MinecraftServer server;
+
+    @Unique
+    private FeatureSet FORCE_TRADES;
+
+    @Inject(at = @At("TAIL"), method = "<init>")
+    private void jbe$init(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey worldKey, DimensionOptions dimensionOptions, WorldGenerationProgressListener worldGenerationProgressListener, boolean debugWorld, long seed, List spawners, boolean shouldTickTime, RandomSequencesState randomSequencesState, CallbackInfo ci) {
+        this.FORCE_TRADES = this.server.getSaveProperties().getEnabledFeatures().combine(FeatureSet.of(FeatureFlags.TRADE_REBALANCE));
+    }
 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/server/MinecraftServer;Ljava/util/concurrent/Executor;Lnet/minecraft/world/level/storage/LevelStorage$Session;Lnet/minecraft/world/level/ServerWorldProperties;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/world/dimension/DimensionOptions;Lnet/minecraft/server/WorldGenerationProgressListener;ZJLjava/util/List;ZLnet/minecraft/util/math/random/RandomSequencesState;)V")
     private void jbe$dragonCheck(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> worldKey, DimensionOptions dimensionOptions, WorldGenerationProgressListener worldGenerationProgressListener, boolean debugWorld, long seed, List<Spawner> spawners, boolean shouldTickTime, RandomSequencesState randomSequencesState, CallbackInfo ci) {
@@ -71,5 +87,10 @@ public abstract class ServerWorldMixin {
 
             profiler.pop();
         }
+    }
+
+    @Inject(at = @At("RETURN"), method = "getEnabledFeatures()Lnet/minecraft/resource/featuretoggle/FeatureSet;", cancellable = true)
+    private void jbe$modifyEnabledFeatures(CallbackInfoReturnable<FeatureSet> cir) {
+        cir.setReturnValue(FORCE_TRADES);
     }
 }
