@@ -45,7 +45,7 @@ public abstract class HeldItemRendererMixin {
 
     @Shadow private ItemStack offHand;
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z"), method = "renderFirstPersonItem")
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z"), method = "renderFirstPersonItem", cancellable = true)
     private void renderCaveMap(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         if (item.isOf(MainInit.FILLED_CAVE_MAP)) {
             boolean bl = hand == Hand.MAIN_HAND;
@@ -55,6 +55,8 @@ public abstract class HeldItemRendererMixin {
             } else {
                 jbe$renderCaveMapInOneHand(matrices, vertexConsumers, light, equipProgress, arm, swingProgress, item);
             }
+            matrices.pop(); // big oof, maybe fix later...?
+            ci.cancel();
         }
     }
 
