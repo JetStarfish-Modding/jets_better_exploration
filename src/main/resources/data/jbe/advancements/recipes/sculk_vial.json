@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_echo_shard": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:echo_shard"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "jbe:sculk_vial"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_echo_shard"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "jbe:sculk_vial"
+    ]
+  },
+  "sends_telemetry_event": false
+}

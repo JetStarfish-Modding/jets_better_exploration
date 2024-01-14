@@ -8,10 +8,11 @@
   },
   "pattern": [
     "# #",
+    "# #",
     "###"
   ],
   "result": {
-    "count": 61,
+    "count": 1,
     "item": "jbe:sculk_vial"
   },
   "show_notification": true
