@@ -1,6 +1,7 @@
 package dev.hugeblank.jbe.item;
 
 import dev.hugeblank.jbe.MainInit;
+import net.minecraft.block.MapColor;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -109,16 +110,16 @@ public class SculkVialItem extends Item {
         super.appendTooltip(itemStack, world, tooltip, context);
         NbtCompound nbt = itemStack.getNbt();
         if (nbt != null) {
-            tooltip.add(Text.translatable("item.jbe.sculk_vial.levels", Text.literal(Objects.toString(nbt.getInt("experience")) + "/" + MAX_XP).setStyle(Style.EMPTY.withColor(TextColor.parse("gray"))))
-                    .setStyle(Style.EMPTY.withColor(TextColor.parse("dark_gray")))
+            tooltip.add(Text.translatable("item.jbe.sculk_vial.levels", Text.literal(Objects.toString(nbt.getInt("experience")) + "/" + MAX_XP).withColor(MapColor.LIGHT_GRAY.color))
+                    .withColor(MapColor.GRAY.color)
             );
         }
         if (world != null && world.isClient()) {
             tooltip.add(Text.translatable("item.jbe.sculk_vial.usage.fill", Text.keybind("key.sneak"), Text.keybind("key.use"))
-                    .setStyle(Style.EMPTY.withColor(TextColor.parse("dark_gray")))
+                    .withColor(MapColor.GRAY.color)
             );
             tooltip.add(Text.translatable("item.jbe.sculk_vial.usage.drain", Text.keybind("key.use"))
-                    .setStyle(Style.EMPTY.withColor(TextColor.parse("dark_gray")))
+                    .withColor(MapColor.GRAY.color)
             );
         }
     }

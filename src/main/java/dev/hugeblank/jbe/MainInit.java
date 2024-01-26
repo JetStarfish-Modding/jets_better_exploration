@@ -7,6 +7,8 @@ import dev.hugeblank.jbe.network.JbeStateChangeS2CPacket;
 import dev.hugeblank.jbe.village.SellCustomMapTradeFactory;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
@@ -19,6 +21,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.PoweredRailBlock;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.item.*;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.registry.Registries;
@@ -26,25 +29,26 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.structure.Structure;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MainInit implements ModInitializer {
 	public static final String ID = "jbe";
 	public static final TagKey<Structure> ON_ANCIENT_CITY_MAPS;
-	public static final Map<RegistryKey<Biome>, List<Block>> BIOME_CROP_BONUSES;
 
 	public static final SoundEvent SCULK_VIAL_DEPOSIT;
 	public static final SoundEvent SCULK_VIAL_WITHDRAW;
@@ -61,6 +65,8 @@ public class MainInit implements ModInitializer {
 	public static final SculkVialItem SCULK_VIAL;
 	public static final FilledMapItem FILLED_CAVE_MAP;
 	public static final PoweredRailBlock POWERED_RAIL;
+
+	public static FeatureSet FORCE_TRADES;
 	private static final TradeOffers.Factory SELL_ANCIENT_CITY_MAP_TRADE;
 
 	private static boolean registeredTrade = false;
@@ -79,21 +85,30 @@ public class MainInit implements ModInitializer {
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> content.addAfter(Items.POWERED_RAIL, POWERED_RAIL));
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> content.add(SCULK_VIAL));
 
-		ServerWorldEvents.UNLOAD.register((server, world) -> {
-			if (world.getRegistryKey().getValue().toString().equals("minecraft:the_end")) {
-				Int2ObjectMap<TradeOffers.Factory[]> cartographer = TradeOffers.REBALANCED_PROFESSION_TO_LEVELED_TRADE.get(VillagerProfession.CARTOGRAPHER);
-				List<TradeOffers.Factory> factories = new ArrayList<>(List.of(cartographer.get(5)));
-				factories.remove(SELL_ANCIENT_CITY_MAP_TRADE);
-				registeredTrade = false;
-				cartographer.put(5, factories.toArray(new TradeOffers.Factory[0]));
+		ServerLifecycleEvents.SERVER_STOPPED.register((server) -> {
+			// Remove unlockable trades
+			Int2ObjectMap<TradeOffers.Factory[]> cartographer = TradeOffers.REBALANCED_PROFESSION_TO_LEVELED_TRADE.get(VillagerProfession.CARTOGRAPHER);
+			List<TradeOffers.Factory> factories = new ArrayList<>(List.of(cartographer.get(5)));
+			factories.remove(SELL_ANCIENT_CITY_MAP_TRADE);
+			registeredTrade = false;
+			cartographer.put(5, factories.toArray(new TradeOffers.Factory[0]));
+		});
+
+		ServerLifecycleEvents.SERVER_STARTED.register((server) -> {
+			// Set sprint and exhaustion modifiers
+			HORSE_SPRINT_MOD.setValue((double) server.getGameRules().getInt(HORSE_SPRINT_BUFF)/100);
+			HORSE_EXHAUSTED_MOD.setValue((double) server.getGameRules().getInt(HORSE_EXHAUST_DEBUFF)/100);
+			// Add unlockable trades if conditions are met
+			ServerWorld end = Objects.requireNonNull(server.getWorld(World.END));
+			EnderDragonFight enderDragonFight = end.getEnderDragonFight();
+			if (enderDragonFight == null || enderDragonFight.hasPreviouslyKilled()) {
+				MainInit.registerAncientCityMapTrade();
 			}
 		});
-		ServerWorldEvents.LOAD.register((server, world) -> {
-			if (world.getRegistryKey().getValue().toString().equals("minecraft:overworld")) { // just run once
-				HORSE_SPRINT_MOD.setValue((double) server.getGameRules().getInt(HORSE_SPRINT_BUFF)/100);
-				HORSE_EXHAUSTED_MOD.setValue((double) server.getGameRules().getInt(HORSE_EXHAUST_DEBUFF)/100);
-			}
-		});
+
+		ServerLifecycleEvents.SERVER_STARTING.register(
+				(server) -> FORCE_TRADES = server.getSaveProperties().getEnabledFeatures().combine(FeatureSet.of(FeatureFlags.TRADE_REBALANCE))
+		);
 
 	}
 
@@ -146,46 +161,7 @@ public class MainInit implements ModInitializer {
 				GameRuleFactory.createIntRule(-40, -100, 0, (server, intRule) -> HORSE_EXHAUSTED_MOD.setValue((double) intRule.get()/100))
 		);
 
-		BIOME_CROP_BONUSES = new HashMap<>();
-		registerCropsToBiomes(
-				List.of(Blocks.KELP),
-				BiomeKeys.WARM_OCEAN, BiomeKeys.LUKEWARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN, BiomeKeys.OCEAN, BiomeKeys.DEEP_OCEAN, BiomeKeys.COLD_OCEAN, BiomeKeys.DEEP_COLD_OCEAN, BiomeKeys.FROZEN_OCEAN, BiomeKeys.DEEP_FROZEN_OCEAN
-		);
-		registerCropsToBiomes(
-				List.of(Blocks.PUMPKIN_STEM),
-				BiomeKeys.FROZEN_PEAKS, BiomeKeys.JAGGED_PEAKS, BiomeKeys.STONY_PEAKS
-		);
-		registerCropsToBiomes(
-				List.of(Blocks.CARROTS, Blocks.POTATOES, Blocks.SWEET_BERRY_BUSH),
-				BiomeKeys.OLD_GROWTH_PINE_TAIGA, BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA, BiomeKeys.TAIGA, BiomeKeys.SNOWY_TAIGA
-		);
-		registerCropsToBiomes(
-				List.of(Blocks.BEETROOTS),
-				BiomeKeys.DARK_FOREST
-		);
-		registerCropsToBiomes(
-				List.of(Blocks.MELON, Blocks.BAMBOO, Blocks.COCOA),
-				BiomeKeys.JUNGLE, BiomeKeys.BAMBOO_JUNGLE, BiomeKeys.SPARSE_JUNGLE
-		);
-		registerCropsToBiomes(
-				List.of(Blocks.SUGAR_CANE),
-				BiomeKeys.SWAMP, BiomeKeys.MANGROVE_SWAMP
-		);
-		registerCropsToBiomes(
-				List.of(Blocks.CACTUS),
-				BiomeKeys.DESERT
-		);
-		registerCropsToBiomes(
-				List.of(Blocks.WHEAT),
-				BiomeKeys.SAVANNA, BiomeKeys.SAVANNA_PLATEAU, BiomeKeys.WINDSWEPT_SAVANNA
-		);
-	}
-
-	@SafeVarargs
-	private static void registerCropsToBiomes(List<Block> blocks, RegistryKey<Biome>... biomes) {
-		for (RegistryKey<Biome> biome: biomes) {
-			BIOME_CROP_BONUSES.put(biome, blocks);
-		}
+		MainBiomeModifications.init();
 	}
 
 	public static void registerAncientCityMapTrade() {
@@ -196,16 +172,6 @@ public class MainInit implements ModInitializer {
 				}
 			});
 			registeredTrade = true;
-		}
-	}
-
-	public static Block melt(Block block) {
-		if (block.equals(Blocks.BLUE_ICE)) {
-			return Blocks.PACKED_ICE;
-		} else if (block.equals(Blocks.PACKED_ICE)) {
-			return Blocks.ICE;
-		} else {
-			return Blocks.AIR;
 		}
 	}
 }
