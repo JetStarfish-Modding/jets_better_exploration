@@ -10,7 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
@@ -38,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-public class MainBiomeModifications {
+public class MainDataModifications {
     public static final Map<RegistryKey<Biome>, List<Block>> BIOME_CROP_BONUSES;
     private static final Map<Predicate<BiomeSelectionContext>, Map<RegistryKey<PlacedFeature>, RegistryKey<PlacedFeature>>> FEATURES_TO_BIOMES;
     private static final List<String> KEYNAMES;

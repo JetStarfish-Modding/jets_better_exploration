@@ -7,9 +7,7 @@ import dev.hugeblank.jbe.network.JbeStateChangeS2CPacket;
 import dev.hugeblank.jbe.village.SellCustomMapTradeFactory;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -17,7 +15,6 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.PoweredRailBlock;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -26,7 +23,6 @@ import net.minecraft.item.*;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
@@ -39,9 +35,6 @@ import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.structure.Structure;
 
 import java.util.*;
@@ -66,7 +59,7 @@ public class MainInit implements ModInitializer {
 	public static final FilledMapItem FILLED_CAVE_MAP;
 	public static final PoweredRailBlock POWERED_RAIL;
 
-	public static FeatureSet FORCE_TRADES;
+	public static FeatureSet FORCE_TRADE_REBALANCE;
 	private static final TradeOffers.Factory SELL_ANCIENT_CITY_MAP_TRADE;
 
 	private static boolean registeredTrade = false;
@@ -107,7 +100,7 @@ public class MainInit implements ModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STARTING.register(
-				(server) -> FORCE_TRADES = server.getSaveProperties().getEnabledFeatures().combine(FeatureSet.of(FeatureFlags.TRADE_REBALANCE))
+				(server) -> FORCE_TRADE_REBALANCE = server.getSaveProperties().getEnabledFeatures().combine(FeatureSet.of(FeatureFlags.TRADE_REBALANCE))
 		);
 
 	}
@@ -161,7 +154,7 @@ public class MainInit implements ModInitializer {
 				GameRuleFactory.createIntRule(-40, -100, 0, (server, intRule) -> HORSE_EXHAUSTED_MOD.setValue((double) intRule.get()/100))
 		);
 
-		MainBiomeModifications.init();
+		MainDataModifications.init();
 	}
 
 	public static void registerAncientCityMapTrade() {
