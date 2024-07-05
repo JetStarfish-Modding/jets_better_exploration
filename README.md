@@ -22,3 +22,5 @@ Features:
 - Striders no longer get cold when out of lava in the nether, only when out of lava in the overworld will they get cold.
 - Striders can now spawn on the nether terrain, and will not mind walking on it over lava.
 - Boats no longer move quickly with ice. This can be changed with the game rule `allowIceBoatSpeed`.
+
+Minecart logic adapted from [Audaki's Cart Engine](https://github.com/audaki/minecraft-cart-engine). Please check out their work as well!
