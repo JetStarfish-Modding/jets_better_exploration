@@ -44,7 +44,7 @@ public class SellCustomMapTradeFactory implements TradeOffers.Factory {
         } else {
             BlockPos blockPos = serverWorld.locateStructure(this.structure, entity.getBlockPos(), 100, true);
             if (blockPos != null) {
-                ItemStack itemStack = createMap(serverWorld, blockPos.getX(), blockPos.getZ(), (byte)2, true, true);
+                ItemStack itemStack = createMap(serverWorld, blockPos.getX(), blockPos.getZ(), (byte) 2, true, true);
                 FilledMapItem.fillExplorationMap(serverWorld, itemStack);
                 MapState.addDecorationsNbt(itemStack, blockPos, "+", this.iconType);
                 itemStack.setCustomName(Text.translatable(this.nameKey));

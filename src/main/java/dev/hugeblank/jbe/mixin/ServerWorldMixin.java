@@ -53,8 +53,8 @@ public abstract class ServerWorldMixin {
         }
     }
 
-    @Inject(at = @At("RETURN"), method = "getEnabledFeatures()Lnet/minecraft/resource/featuretoggle/FeatureSet;", cancellable = true)
-    private void jbe$modifyEnabledFeatures(CallbackInfoReturnable<FeatureSet> cir) {
-        cir.setReturnValue(MainInit.FORCE_TRADE_REBALANCE);
-    }
+//    @Inject(at = @At("RETURN"), method = "getEnabledFeatures()Lnet/minecraft/resource/featuretoggle/FeatureSet;", cancellable = true)
+//    private void jbe$modifyEnabledFeatures(CallbackInfoReturnable<FeatureSet> cir) {
+//        cir.setReturnValue(MainInit.FORCE_TRADE_REBALANCE);
+//    }
 }

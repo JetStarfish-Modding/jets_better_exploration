@@ -9,5 +9,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(ItemEntry.class)
 public interface ItemEntryAccessor {
     @Accessor
-    RegistryEntry<Item> getItem();
+    Item getItem();
 }

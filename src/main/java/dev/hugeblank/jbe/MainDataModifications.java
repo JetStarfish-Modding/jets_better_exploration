@@ -31,10 +31,7 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class MainDataModifications {
@@ -48,7 +45,7 @@ public class MainDataModifications {
     static {
         KEYNAMES = List.of(
                 "coal_lower", "coal_upper", "copper", "diamond", "diamond_buried", "diamond_large",
-                "diamond_medium", "iron_middle", "iron_small", "iron_upper", "lapis", "lapis_buried",
+                "diamond", "iron_middle", "iron_small", "iron_upper", "lapis", "lapis_buried",
                 "redstone", "redstone_lower"
         );
 
@@ -98,11 +95,11 @@ public class MainDataModifications {
                 if (id.equals(new Identifier("chests/ancient_city"))) {
                     tableBuilder.modifyPools((pool) -> {
                         boolean replace = false; // now this is just stupid...
-                        ImmutableList.Builder<LootPoolEntry> builder = ImmutableList.builder();
-                        for (LootPoolEntry entry : ((LootPoolBuilderAccessor) pool).getEntries().build()) {
-                            if (entry instanceof ItemEntry && ((ItemEntryAccessor) entry).getItem().equals(Items.DIAMOND_HOE.getRegistryEntry())) {
+                        List<LootPoolEntry> builder = new ArrayList<>();
+                        for (LootPoolEntry entry : ((LootPoolBuilderAccessor) pool).getEntries()) {
+                            if (entry instanceof ItemEntry && ((ItemEntryAccessor) entry).getItem().equals(Items.DIAMOND_HOE)) {
                                 EnchantWithLevelsLootFunction.Builder enchantLootFunctionBuilder = EnchantWithLevelsLootFunction.builder(UniformLootNumberProvider.create(30, 50)).allowTreasureEnchantments();
-                                builder.add(ItemEntry.builder(Items.DIAMOND_HELMET).apply(enchantLootFunctionBuilder).build(),
+                                Collections.addAll(builder, ItemEntry.builder(Items.DIAMOND_HELMET).apply(enchantLootFunctionBuilder).build(),
                                         ItemEntry.builder(Items.DIAMOND_CHESTPLATE).apply(enchantLootFunctionBuilder).build(),
                                         ItemEntry.builder(Items.DIAMOND_LEGGINGS).apply(enchantLootFunctionBuilder).build(),
                                         ItemEntry.builder(Items.DIAMOND_BOOTS).apply(enchantLootFunctionBuilder).build(),
@@ -112,7 +109,7 @@ public class MainDataModifications {
                                         ItemEntry.builder(Items.DIAMOND_SHOVEL).apply(enchantLootFunctionBuilder).build(),
                                         ItemEntry.builder(Items.DIAMOND_HOE).apply(enchantLootFunctionBuilder).build());
                                 replace = true;
-                            } else if (entry instanceof ItemEntry && ((ItemEntryAccessor) entry).getItem().equals(Items.DIAMOND_HORSE_ARMOR.getRegistryEntry())) {
+                            } else if (entry instanceof ItemEntry && ((ItemEntryAccessor) entry).getItem().equals(Items.DIAMOND_HORSE_ARMOR)) {
                                 EnchantWithLevelsLootFunction.Builder enchantLootFunctionBuilder = EnchantWithLevelsLootFunction.builder(UniformLootNumberProvider.create(0, 50)).allowTreasureEnchantments();
                                 builder.add(ItemEntry.builder(Items.DIAMOND_HORSE_ARMOR).apply(enchantLootFunctionBuilder).build());
                                 replace = true;

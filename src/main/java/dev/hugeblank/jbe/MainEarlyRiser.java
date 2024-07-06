@@ -7,10 +7,10 @@ public class MainEarlyRiser implements Runnable {
 
     @Override
     public void run() {
-        //<init>(Ljava/lang/String;ZIZZ)V
+        //<init>(ZIZ)V
         ClassTinkerers
-                .enumBuilder(FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_20$class_21"), String.class, "Z", "I", "Z", "Z")
-                .addEnum("ANCIENT_CITY", "ancient_city", true, 0x236e86, false, true)
+                .enumBuilder(FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_20$class_21"), "Z", "I", "Z")
+                .addEnum("ANCIENT_CITY", true, 0x236e86, false)
                 .build();
     }
 }

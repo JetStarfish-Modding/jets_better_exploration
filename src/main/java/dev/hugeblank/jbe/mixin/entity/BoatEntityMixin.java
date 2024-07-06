@@ -21,7 +21,7 @@ public class BoatEntityMixin {
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", ordinal = 1), method = "getNearbySlipperiness()F", locals = LocalCapture.CAPTURE_FAILHARD)
     private void jbe$checkSlipperiness(CallbackInfoReturnable<Float> cir, Box box, Box box2, int i, int j, int k, int l, int m, int n, VoxelShape voxelShape, float f, int o, BlockPos.Mutable mutable, int p, int q, int r, int s, BlockState blockState) {
-        if (blockState.getBlock().getSlipperiness() > 0.6F && !((Entity)(Object)this).getWorld().getGameRules().getBoolean(MainInit.ALLOW_ICE_BOAT_SPEED)) {
+        if (blockState.getBlock().getSlipperiness() > 0.6F && !((Entity)(Object)this).getWorld().getGameRules().getBoolean(MainInit.ALLOW_ICE_BOAT_SPEED)) { // TODO is this warning true?
             slip += blockState.getBlock().getSlipperiness() - 0.6F;
         }
     }

@@ -59,7 +59,6 @@ public class MainInit implements ModInitializer {
 	public static final FilledMapItem FILLED_CAVE_MAP;
 	public static final PoweredRailBlock POWERED_RAIL;
 
-	public static FeatureSet FORCE_TRADE_REBALANCE;
 	private static final TradeOffers.Factory SELL_ANCIENT_CITY_MAP_TRADE;
 
 	private static boolean registeredTrade = false;
@@ -80,7 +79,7 @@ public class MainInit implements ModInitializer {
 
 		ServerLifecycleEvents.SERVER_STOPPED.register((server) -> {
 			// Remove unlockable trades
-			Int2ObjectMap<TradeOffers.Factory[]> cartographer = TradeOffers.REBALANCED_PROFESSION_TO_LEVELED_TRADE.get(VillagerProfession.CARTOGRAPHER);
+			Int2ObjectMap<TradeOffers.Factory[]> cartographer = TradeOffers.PROFESSION_TO_LEVELED_TRADE.get(VillagerProfession.CARTOGRAPHER);
 			List<TradeOffers.Factory> factories = new ArrayList<>(List.of(cartographer.get(5)));
 			factories.remove(SELL_ANCIENT_CITY_MAP_TRADE);
 			registeredTrade = false;
@@ -98,11 +97,6 @@ public class MainInit implements ModInitializer {
 				MainInit.registerAncientCityMapTrade();
 			}
 		});
-
-		ServerLifecycleEvents.SERVER_STARTING.register(
-				(server) -> FORCE_TRADE_REBALANCE = server.getSaveProperties().getEnabledFeatures().combine(FeatureSet.of(FeatureFlags.TRADE_REBALANCE))
-		);
-
 	}
 
 	static {
@@ -159,11 +153,7 @@ public class MainInit implements ModInitializer {
 
 	public static void registerAncientCityMapTrade() {
 		if (!registeredTrade) {
-			TradeOfferHelper.registerVillagerOffers(VillagerProfession.CARTOGRAPHER, 5, (trades, rebalance) -> {
-				if (rebalance) {
-					trades.add(SELL_ANCIENT_CITY_MAP_TRADE);
-				}
-			});
+			TradeOfferHelper.registerVillagerOffers(VillagerProfession.CARTOGRAPHER, 5, (trades) -> trades.add(SELL_ANCIENT_CITY_MAP_TRADE));
 			registeredTrade = true;
 		}
 	}

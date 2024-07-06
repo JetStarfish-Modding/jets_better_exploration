@@ -17,7 +17,6 @@
     "entity.BoatEntityMixin",
     "entity.HorseEntityMixin",
     "entity.LivingEntityMixin",
-    "entity.MerchantEntityMixin",
     "entity.strider.GoBackToLavaGoalMixin",
     "entity.strider.SpawnHelperMixin",
     "entity.strider.SpawnRestrictionMixin",
@@ -26,9 +25,7 @@
     "horse_armor.EnchantmentMixin",
     "horse_armor.HorseArmorItemMixin",
     "horse_armor.ItemsMixin",
-    "village.TradeOfferAccessor",
-    "village.TradeOffersAccessor",
-    "village.TypedWrapperFactoryInvoker"
+    "village.EnchantBookFactoryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

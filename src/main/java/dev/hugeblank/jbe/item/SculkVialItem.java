@@ -16,10 +16,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.UseAction;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,10 +84,6 @@ public class SculkVialItem extends Item {
         return getVialExperience(stack) > 0 ? UseAction.DRINK : UseAction.NONE;
     }
 
-    public SoundEvent getDrinkSound() {
-        return SoundEvents.ENTITY_GENERIC_DRINK;
-    }
-
     public SoundEvent getEatSound() {
         return SoundEvents.ENTITY_GENERIC_DRINK;
     }
@@ -110,16 +103,11 @@ public class SculkVialItem extends Item {
         super.appendTooltip(itemStack, world, tooltip, context);
         NbtCompound nbt = itemStack.getNbt();
         if (nbt != null) {
-            tooltip.add(Text.translatable("item.jbe.sculk_vial.levels", Text.literal(Objects.toString(nbt.getInt("experience")) + "/" + MAX_XP).withColor(MapColor.LIGHT_GRAY.color))
-                    .withColor(MapColor.GRAY.color)
-            );
+            tooltip.add(Text.translatable("item.jbe.sculk_vial.levels", Text.literal(Objects.toString(nbt.getInt("experience")) + "/" + MAX_XP).formatted(Formatting.GRAY)));
         }
         if (world != null && world.isClient()) {
-            tooltip.add(Text.translatable("item.jbe.sculk_vial.usage.fill", Text.keybind("key.sneak"), Text.keybind("key.use"))
-                    .withColor(MapColor.GRAY.color)
-            );
-            tooltip.add(Text.translatable("item.jbe.sculk_vial.usage.drain", Text.keybind("key.use"))
-                    .withColor(MapColor.GRAY.color)
+            tooltip.add(Text.translatable("item.jbe.sculk_vial.usage.fill", Text.keybind("key.sneak"), Text.keybind("key.use")).formatted(Formatting.GRAY));
+            tooltip.add(Text.translatable("item.jbe.sculk_vial.usage.drain", Text.keybind("key.use")).formatted(Formatting.GRAY)
             );
         }
     }

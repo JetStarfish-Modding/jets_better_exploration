@@ -21,9 +21,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
     @Unique
-    private static final Identifier STAMINA_BAR_BACKGROUND_TEXTURE = new Identifier(MainInit.ID, "hud/stamina_bar_background");
+    private static final Identifier STAMINA_BAR_BACKGROUND_TEXTURE = new Identifier(MainInit.ID, "textures/gui/sprites/hud/stamina_bar_background.png");
     @Unique
-    private static final Identifier STAMINA_BAR_PROGRESS_TEXTURE = new Identifier(MainInit.ID, "hud/stamina_bar_progress");
+    private static final Identifier STAMINA_BAR_PROGRESS_TEXTURE = new Identifier(MainInit.ID, "textures/gui/sprites/hud/stamina_bar_progress.png");
 
     @Shadow @Final private MinecraftClient client;
 
@@ -33,17 +33,17 @@ public class InGameHudMixin {
     public void jbe$renderMountStaminaBar(StaminaMount mount, DrawContext context, int x) {
         this.client.getProfiler().push("staminaBar");
         float f = (float) mount.jbe$getStamina()/((AbstractHorseEntity)mount).getWorld().getGameRules().getInt(MainInit.HORSE_STAMINA);
-        int j = (int)(f * 183.0F);
+        int j = (int)(f * 182.0F);
         int k = this.scaledHeight - 32 + 3;
-        context.drawGuiTexture(STAMINA_BAR_BACKGROUND_TEXTURE, x, k, 182, 5);
+        context.drawTexture(STAMINA_BAR_BACKGROUND_TEXTURE, x, k, 0, 0, 182, 5, 182, 5);
         if (j > 0) {
-            context.drawGuiTexture(STAMINA_BAR_PROGRESS_TEXTURE, 182, 5, 0, 0, x, k, j, 5);
+            context.drawTexture(STAMINA_BAR_PROGRESS_TEXTURE, x, k, 0, 0, j, 5, 182, 5);
         }
 
         this.client.getProfiler().pop();
     }
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 0), method = "renderMountJumpBar", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 0), method = "renderMountJumpBar", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void jbe$hideJumpBar(JumpingMount mount, DrawContext context, int x, CallbackInfo ci, float f, int i, int j, int k) {
         if (j == 0) {
             ci.cancel();
