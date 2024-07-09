@@ -1,0 +1,13 @@
+{
+  "gamerule.allowIceBoatSpeed": "Дозволяти човнам прискорюватися на блоках льоду",
+  "gamerule.horseStaminaTicks": "Кількість тіків, яку кінь може витримати коли біжить",
+  "gamerule.horseExhaustDebuff": "Відсоток швидкості, який втрачається коли кінь втомлений",
+  "gamerule.horseSprintBuff": "Відсоток швидкості, який додається коли кінь біжить",
+  "gamerule.horseStaminaRegenTicks": "Кількість тіків, за яку кінь відновлює свою втомленність",
+  "block.jbe.powered_rail": "Зверх-електризовані рейки",
+  "filled_map.ancient_city": "Мапа дослідника безодні",
+  "item.jbe.sculk_vial": "Скалкова пробірка",
+  "item.jbe.sculk_vial.levels": "Досвід: %1$s",
+  "item.jbe.sculk_vial.usage.fill": "Додати досвід: %1$s + %2$s",
+  "item.jbe.sculk_vial.usage.drain": "Забрати досвід: %1$s"
+}

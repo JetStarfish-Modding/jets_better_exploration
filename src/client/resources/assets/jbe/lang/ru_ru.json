@@ -1,0 +1,13 @@
+{
+  "gamerule.allowIceBoatSpeed": "Позволять лодкам ускоряться на ледяных блоках",
+  "gamerule.horseStaminaTicks": "Количество тиков, до которых лошадь не устаёт в бегу",
+  "gamerule.horseExhaustDebuff": "Количество скорости, потерянное при усталости лошади (%)",
+  "gamerule.horseSprintBuff": "Количество скорости, добавленное при беге лошади (%)",
+  "gamerule.horseStaminaRegenTicks": "Количество тиков, в течение которых лошадь восстанавливает всю усталость",
+  "block.jbe.powered_rail": "Сверхэнергорельсы",
+  "filled_map.ancient_city": "Карта исследователя бездны",
+  "item.jbe.sculk_vial": "Скалковый флакон",
+  "item.jbe.sculk_vial.levels": "Опыт: %1$s",
+  "item.jbe.sculk_vial.usage.fill": "Добавить опыт: %1$s + %2$s",
+  "item.jbe.sculk_vial.usage.drain": "Забрать опыт: %1$s"
+}
