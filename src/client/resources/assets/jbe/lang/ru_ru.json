@@ -1,8 +1,8 @@
 {
   "gamerule.allowIceBoatSpeed": "Позволять лодкам ускоряться на ледяных блоках",
-  "gamerule.horseStaminaTicks": "Количество тиков, в течение которых лошади могут бежать, пока не устанут",
-  "gamerule.horseExhaustDebuff": "Количество скорости которое теряется при усталости лошади (%)",
-  "gamerule.horseSprintBuff": "Количество скорости которое добавляется при спринте лошади (%)",
+  "gamerule.horseStaminaTicks": "Количество тиков, до которых лошадь не устаёт в бегу",
+  "gamerule.horseExhaustDebuff": "Количество скорости, потерянное при усталости лошади (%)",
+  "gamerule.horseSprintBuff": "Количество скорости, добавленное при беге лошади (%)",
   "gamerule.horseStaminaRegenTicks": "Количество тиков, в течение которых лошадь восстанавливает всю усталость",
   "block.jbe.powered_rail": "Сверхэнергорельсы",
   "filled_map.ancient_city": "Карта исследователя бездны",
