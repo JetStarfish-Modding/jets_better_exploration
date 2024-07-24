@@ -11,7 +11,7 @@
 	"contact": {
 		"homepage": "https://www.patreon.com/JetStarfish"
 	},
-	"license": "ARR",
+	"license": "MIT",
 	"icon": "assets/jbe/icon.png",
 	"environment": "*",
 	"entrypoints": {
